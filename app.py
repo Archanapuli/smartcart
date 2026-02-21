@@ -472,6 +472,9 @@ def delete_item(item_id):
     return redirect('/admin/item-list')
 
 
+ADMIN_UPLOAD_FOLDER = 'static/uploads/admin_profiles'
+app.config['ADMIN_UPLOAD_FOLDER'] = ADMIN_UPLOAD_FOLDER
+
 # =======================================================
 # ROUTE 15: SHOW ADMIN PROFILE DATA - SQLite3
 # =======================================================
@@ -707,7 +710,7 @@ def admin_orders():
     cursor.execute("""
         SELECT o.order_id, o.user_id, o.amount, 
                o.payment_status, o.order_status, o.created_at,
-               u.name AS username
+               u.username AS username
         FROM "orders" o
         LEFT JOIN "users" u ON o.user_id = u.user_id
         ORDER BY o.created_at DESC
