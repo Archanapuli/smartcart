@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block title %}View Product{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">🔍 Product Details</h2>
+
+    <div class="card shadow p-4">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.image) }}"
+                     class="img-fluid rounded">
+            </div>
+
+            <div class="col-md-8">
+                <h4>{{ product.name }}</h4>
+                <p><strong>Category:</strong> {{ product.category }}</p>
+                <p><strong>Price:</strong> ₹{{ product.price }}</p>
+                <p><strong>Description:</strong><br>{{ product.description }}</p>
+
+                <a href="/admin/item-list" class="btn btn-secondary mt-3">⬅ Back</a>
+                <a href="/admin/update-item/{{ product.product_id }}" class="btn btn-warning mt-3">✏ Edit</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

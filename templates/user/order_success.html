@@ -1,0 +1,54 @@
+{% extends "user/base.html" %}
+
+{% block title %}Order Successful — SmartCart{% endblock %}
+
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center py-5">
+<div class="success-card text-center">
+
+    <h2 class="text-success">🎉 Your Order is Confirmed!</h2>
+    <p>Thank you for shopping with <strong>SmartCart</strong>.</p>
+
+    <div class="text-start mt-4">
+        <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+        <p><strong>Payment ID:</strong> {{ order.razorpay_payment_id }}</p>
+        <p><strong>Amount Paid:</strong> ₹{{ order.amount }}</p>
+        <p><strong>Order Date:</strong> {{ order.created_at }}</p>
+    </div>
+
+    <h4 class="mt-4">Order Summary</h4>
+
+    <table class="items-table">
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price (₹)</th>
+        </tr>
+
+        {% for it in items %}
+        <tr>
+            <td>{{ it.product_name }}</td>
+            <td>{{ it.quantity }}</td>
+            <td>{{ it.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="mt-4 d-flex justify-content-center gap-3">
+        
+        <a href="/user/products" class="btn btn-primary">
+            Continue Shopping
+        </a>
+
+        <a href="/user/my-orders" class="btn btn-secondary">
+            View My Orders
+        </a>
+
+        <a href="/user/download-invoice/{{ order.order_id }}" class="btn btn-info">Download Invoice (PDF)</a>
+
+    </div>
+
+</div>
+</div>
+{% endblock %}

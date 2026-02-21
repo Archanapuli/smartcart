@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Invoice</title>
+
+</head>
+
+<body>
+
+<div class="invoice-box">
+
+    <div class="header">
+        <h2>SmartCart Invoice</h2>
+        <p>Order ID: {{ order.order_id }}</p>
+        <p>Date: {{ order.created_at }}</p>
+    </div>
+
+    <div class="section-title">Customer Details</div>
+    <table class="info-table">
+        <tr>
+            <td><strong>User ID:</strong></td>
+            <td>{{ order.user_id }}</td>
+        </tr>
+        {% if order.razorpay_payment_id %}
+        <tr>
+            <td><strong>Payment ID:</strong></td>
+            <td>{{ order.razorpay_payment_id }}</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <div class="section-title">Items</div>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th width="80">Qty</th>
+            <th width="120">Price (₹)</th>
+        </tr>
+
+        {% for it in items %}
+        <tr>
+            <td>{{ it.product_name }}</td>
+            <td>{{ it.quantity }}</td>
+            <td>{{ it.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="total">
+        Grand Total: ₹{{ order.amount }}
+    </div>
+
+</div>
+
+</body>
+</html>

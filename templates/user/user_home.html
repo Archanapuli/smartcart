@@ -1,0 +1,99 @@
+{% extends "user/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- NAVBAR FIRST -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <div class="container-fluid px-4">
+
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user_products') }}">
+            Browse Products
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('view_cart') }}">
+            <i class="bi bi-cart3"></i> Cart
+            {% if cart %}
+              <span class="badge bg-danger">{{ cart|length }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user_profile') }}">
+            👤 Profile
+          </a>
+
+        </li>
+
+      </ul>
+      
+  <div class="d-flex justify-content-between ">
+
+    <div class="d-flex  gap-2">
+
+      <form method="GET" action="/user/products" class="search-form-row">
+        <input type="text"
+               name="search"
+               placeholder="🔍Search products..."
+               value="{{ request.args.get('search','') }}"
+               class="search-input">
+
+        <button type="submit" class="search-submit">
+            SEARCH
+        </button>
+  </form>
+    
+      <a href="{{ url_for('user_logout') }}"
+         class="btn btn-logout ">
+        Logout
+      </a>
+</div>
+      </div>
+    </div>
+  </div>
+
+
+
+</nav>
+
+<!-- HOME CONTENT BELOW NAV -->
+<div class="hero-section">
+  <div class="container-fluid text-start">
+    <h1 class="fw-bold">Welcome to SmartCart, {{ session.get('user_name') }}</h1>
+<h3 class="fw-bold mt-4 mb-3">All Products</h3>
+<div class="product-container">
+
+{% for product in products %}
+<div class="product-card">
+
+    <img src="/static/uploads/product_images/{{ product.image }}">
+
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.category }}</p>
+    <p><strong>₹{{ product.price }}</strong></p>
+
+    <a href="/user/product/{{ product.product_id }}">View Details</a>
+</div>
+{% endfor %}
+</div>
+
+
+  
+</div>
+ 
+
+{% endblock %}

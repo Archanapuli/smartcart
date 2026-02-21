@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% block title %}Update Product{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2 class="mb-4"> Update Product</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="card shadow p-4">
+
+        <div class="mb-3">
+            <label>Product Name</label>
+            <input type="text" name="name" class="form-control"
+                   value="{{ product.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="4" required>{{ product.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Category</label>
+            <input type="text" name="category" class="form-control"
+                   value="{{ product.category }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Price</label>
+            <input type="number" step="0.01" name="price" class="form-control"
+                   value="{{ product.price }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Current Image</label><br>
+            <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.image) }}"
+                 width="120" class="mb-2 rounded">
+        </div>
+
+        <div class="mb-3">
+            <label>Change Image (optional)</label>
+            <input type="file" name="image" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success">✅ Update Product</button><br>
+        <a href="/admin/item-list" class="btn btn-secondary">Cancel</a>
+
+    </form>
+</div>
+{% endblock %}

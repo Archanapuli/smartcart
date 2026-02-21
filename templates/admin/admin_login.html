@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper admin-bg">
+
+    <div class="admin-card">
+
+        <h3 class="text-center mb-2">Admin Login</h2>
+        <p class="text-center text-muted mb-4">Login to continue</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+        <form method="POST" action="/admin-login">
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-admin w-100">
+                Login
+            </button>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('admin_forgot_password') }} "class="text-decoration-none small">Forgot Password?</a>
+            </div>
+
+            <p class="text-center mt-3">
+                Don't have an account?
+                <a href="/admin-signup" class="login-link">Register</a>
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

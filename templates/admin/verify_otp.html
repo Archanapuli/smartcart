@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="text-center mb-3">Verify OTP</h4>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+                <form method="POST" action="/verify-otp">
+
+                    <div class="mb-3">
+                        <label class="form-label">OTP</label>
+                        <input type="text" name="otp" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Create Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <button class="btn btn-purple w-100">
+                        Verify & Register
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

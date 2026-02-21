@@ -1,0 +1,36 @@
+{% extends "user/base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+
+<div class="otp-card">
+
+    <h2>Verify OTP</h2>
+    <p style="color:gray; text-align:left; margin-bottom:20px;">
+    Enter OTP and create your password
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="success-msg">
+            {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+
+        <input type="password" name="password" placeholder="Create Password" required>
+
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <button type="submit">Verify & Create Password</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

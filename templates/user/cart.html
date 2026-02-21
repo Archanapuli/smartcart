@@ -1,0 +1,115 @@
+{% extends "user/base.html" %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 fw-bold text-dark">Your Shopping Cart</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if not cart %}
+        <div class="text-center p-5 border rounded shadow-sm">
+            <h4>Your cart is empty 🛒</h4>
+            <a href="{{ url_for('user_products') }}" class="btn btn-success mt-3">
+                Shop Now
+            </a>
+        </div>
+
+    {% else %}
+
+    <div class="table-responsive">
+        <table class="table align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for product_id, item in cart.items() %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='uploads/product_images/' + item.image) }}"
+                                 width="80" class="me-3 rounded">
+
+                            <div>
+                                <h6 class="mb-0">{{ item.name }}</h6>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>₹{{ item.price }}</td>
+
+                    <td>
+                        <div class="d-flex align-items-center">
+
+                            <a href="{{ url_for('decrease_quantity', pid=product_id) }}"
+                               class="btn btn-outline-secondary btn-sm">-</a>
+
+                            <span class="mx-2">{{ item.quantity }}</span>
+
+                            <a href="{{ url_for('increase_quantity', pid=product_id) }}"
+                               class="btn btn-outline-secondary btn-sm">+</a>
+                        </div>
+                    </td>
+
+                    <td>
+                        ₹{{ item.price * item.quantity }}
+                    </td>
+
+                    <td>
+                        <a href="{{ url_for('remove_from_cart', pid=product_id) }}"
+                           class="btn btn-danger btn-sm">
+                            Remove
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Grand Total Section -->
+    <div class="d-flex justify-content-between align-items-center mt-4 p-3 border rounded shadow-sm bg-light">
+        <h5 class="mb-0">
+            Grand Total:
+            <span class="text-success fw-bold">₹{{ grand_total }}</span>
+        </h5>
+
+        <div>
+            <a href="{{ url_for('user_products') }}" class="btn btn-secondary">
+                Continue Shopping
+                </a>
+
+                
+            <a href="{{ url_for('user_pay') }}" class="btn btn-primary">Pay Now</a>  
+
+
+            </a>
+            <a href="{{ url_for('user_logout') }}" class="btn btn-success">
+                logout
+            </a>
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

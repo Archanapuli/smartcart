@@ -1,0 +1,101 @@
+{% extends "user/base.html" %}
+
+{% block title %}Admin Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-3" style="padding-bottom:120px;">
+
+    <h2 class="mb-4 text-center">👤 Admin Profile</h2>
+
+    
+    <!-- Profile Image -->
+<div class="mb-4 text-center">
+
+    <a href="#profileImageModal">
+        <img
+            src="{{ url_for(
+                'static',
+                filename='uploads/user_profiles/' ~ user.profile_image
+                if user.profile_image
+                else 'uploads/images/default-avatar.png'
+            ) }}"
+            class="rounded-circle border profile-pic"
+            width="120"
+            height="120"
+            alt="Profile Image">
+    </a>
+</div>
+
+
+<div class="d-flex justify-content-center">
+<form method="POST" action="/user/profile"
+      enctype="multipart/form-data"
+      class="card p-4 shadow-sm"
+      style="max-width: 500px;">
+      
+    <div class="mb-3">
+        <label class="form-label fw-bold">Name</label>
+        <input type="text" name="name" class="form-control"
+               value="{{ user.name }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">Email</label>
+        <input type="email" name="email" class="form-control"
+               value="{{ user.email }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">
+            New Password <span class="text-muted">(optional)</span>
+        </label>
+        <input type="password" name="password" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">
+            Upload New Profile Image <span class="text-muted">(optional)</span>
+        </label>
+        <input type="file" name="profile_image"
+               class="form-control" accept="image/*">
+    <br>
+
+</div>
+
+<div class="d-flex gap-2 mt-3">
+
+    <!-- Update -->
+    <button type="submit"
+            class="btn btn-info btn-sm">
+        Update Profile
+    </button>
+
+    <!-- Delete (Only if image exists) -->
+    {% if user.profile_image %}
+    <button type="submit"
+            formaction="{{ url_for('delete_user_profile_image') }}"
+            formmethod="POST"
+            class="btn btn-sm"
+            onclick="return confirm('Are you sure?');">
+        Delete Photo
+    </button>
+    {% endif %}
+
+    <!-- Back -->
+    <a href="/user-dashboard"
+       class="btn btn-secondary btn-lg" style="height:40px;margin-top:18px;width:100px;">
+        Back
+    </a>
+
+</div>
+
+
+<!-- Image Modal -->
+
+<div id="profileImageModal" class="image-modal">
+    <a href="#" class="close-btn">×</a>
+    <img src="{{ url_for('static',
+        filename='uploads/user_profiles/' ~ user.profile_image
+        if user.profile_image else 'uploads/images/default-avatar.png') }}"alt="Profile Image">
+
+</div>
+
+
+{% endblock %}

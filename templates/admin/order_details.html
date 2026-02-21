@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Order #{{ order.order_id }} — SmartCart{% endblock %}
+
+
+
+{% block content %}
+<div class="admin-order-wrapper">
+
+<div class="admin-order-card">
+
+    <h2 class="mb-3">Order #{{ order.order_id }}</h2>
+
+    <div class="mb-3">
+        <p><strong>Payment:</strong> {{ order.payment_status }}</p>
+        <p><strong>Total Amount:</strong> ₹{{ order.amount }}</p>
+        <p><strong>Current Status:</strong> {{ order.order_status }}</p>
+    </div>
+
+    <h4>Update Order Status</h4>
+
+    <form method="POST"
+          action="/admin/update-order-status/{{ order.order_id }}"
+          class="d-flex gap-2 align-items-center mb-4">
+
+        <select name="status" class="form-select w-50">
+            <option value="Pending"   {% if order.order_status=='Pending' %}selected{% endif %}>Pending</option>
+            <option value="Confirmed" {% if order.order_status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+            <option value="Packed"    {% if order.order_status=='Packed' %}selected{% endif %}>Packed</option>
+            <option value="Shipped"   {% if order.order_status=='Shipped' %}selected{% endif %}>Shipped</option>
+            <option value="Delivered" {% if order.order_status=='Delivered' %}selected{% endif %}>Delivered</option>
+        </select>
+
+        <button type="submit" class="btn btn-success">
+            Update
+        </button>
+    </form>
+
+    <h4>Items</h4>
+
+    <table class="items-table">
+        <tr>
+            <th>Product</th>
+            <th width="90">Qty</th>
+            <th width="140">Price</th>
+        </tr>
+
+        {% for it in items %}
+        <tr>
+            <td>{{ it.product_name }}</td>
+            <td>{{ it.quantity }}</td>
+            <td>₹{{ it.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Welcome, {{ session.get('admin_name') }}</h2>
+
+<div class="mb-3">
+    <a href="/admin/add-item" class="btn btn-secondary">
+        Add Product
+    </a>
+
+    
+
+    <a href="/admin/item-list" class="btn btn-secondary">
+        View All Products
+    </a>
+</div>
+
+<!-- <p>This is your admin dashboard.</p> -->
+
+{% endblock %}
