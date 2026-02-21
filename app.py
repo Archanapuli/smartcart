@@ -14,6 +14,8 @@ import razorpay
 import traceback
 from utils.pdf_generator import generate_pdf
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+load_dotenv()
 
 
 app = Flask(__name__)
