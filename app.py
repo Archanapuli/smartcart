@@ -780,7 +780,9 @@ def update_order_status(order_id):
 # =================================================================
 # ROUTE: USER REGISTRATION
 # =================================================================
-
+@app.route('/')
+def home():
+    return redirect('/user-login')
 
 @app.route('/user-register', methods=['GET', 'POST'])
 def user_register():
