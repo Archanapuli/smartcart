@@ -92,17 +92,17 @@
             <span class="text-success fw-bold">₹{{ grand_total }}</span>
         </h5>
 
-        <div>
-            <a href="{{ url_for('user_products') }}" class="btn btn-secondary">
+        <div class="d-flex flex-column flex-md-row gap-3 mt-4">
+            <a href="{{ url_for('user_products') }}" class="btn btn-secondary flex-fill">
                 Continue Shopping
                 </a>
 
                 
-            <a href="{{ url_for('user_pay') }}" class="btn btn-primary">Pay Now</a>  
+            <a href="{{ url_for('user_pay') }}" class="btn btn-primary flex-fill">Pay Now</a>  
 
 
             </a>
-            <a href="{{ url_for('user_logout') }}" class="btn btn-success">
+            <a href="{{ url_for('user_logout') }}" class="btn btn-success flex-fill">
                 logout
             </a>
         </div>

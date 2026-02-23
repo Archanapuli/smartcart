@@ -78,6 +78,7 @@
                 <td>₹{{ product.price }}</td>
                 
                 <td>
+                    <div class="mt-4 d-flex justify-content-center gap-3">
                     <a href="/admin/view-item/{{ product.product_id }}" class="btn btn-sm btn-info">View</a>
                     <a href="/admin/update-item/{{ product.product_id }}" class="btn btn-sm btn-warning">Edit</a>
                     <form action="{{ url_for('delete_item', item_id=product.product_id) }}"
@@ -88,6 +89,7 @@
     <button type="submit" class="btn btn-sm btn-delete">
         Delete
     </button>
+</div>
 </form>
 
 

@@ -124,7 +124,7 @@
     }
 
     .product-card {
-        width: 190px;
+        width: 100%;
         border: 1px solid #ddd;
         padding: 15px;
         border-radius: 10px;
@@ -289,14 +289,27 @@
 }
 
 .btn-logout {
-    width: 100px;
     height: 42px;
     font-weight: 600;
-    background-color: #FF0000;
+    background-color: #dc3545;   /* bootstrap danger red */
     color: white;
-    position: relative;
-    margin-top: 5px;
-    top: 15px;
+    border-radius: 6px;
+    margin-top: 6px;
+                  /* reset */
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .btn-logout {
+    width: 100%;
+  }
+}
+
+/* DESKTOP */
+@media (min-width: 769px) {
+  .btn-logout {
+    width: 100px;
+  }
 }
 .btn-logout:hover{
     background:  #fc1e12;
@@ -484,11 +497,7 @@
 }
 
 /* Invoice*/
-body {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-}
+
 
 .invoice-box {
     width: 100%;
@@ -543,3 +552,101 @@ th {
     margin-top: 15px;
     font-weight: bold;
 }
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+  }
+
+  .cards {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  h1 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-container {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-card {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .right-section {
+    padding: 20px;
+  }
+}
+
+.orders-card,
+.success-card,
+.otp-card {
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .orders-card,
+  .success-card,
+  .otp-card {
+    padding: 20px;
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    padding: 25px 20px;
+    text-align: center;
+  }
+
+  .footer-section p {
+    margin: auto;
+  }
+}
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
