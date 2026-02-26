@@ -620,6 +620,18 @@ th {
   max-width: 800px;
 }
 
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .address-form {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+}
+
 @media (max-width: 768px) {
   .orders-card,
   .success-card,

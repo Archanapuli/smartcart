@@ -1,0 +1,39 @@
+{% extends "user/base.html" %}
+{% block title %}Edit Address{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-3 text-center">Edit Address</h3>
+    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <form method="POST">
+        <div class="mb-3"><input type="text" name="full_name" class="form-control" value="{{ address.full_name }}" required></div>
+        <div class="mb-3"><input type="text" name="phone" class="form-control" value="{{ address.phone }}" required></div>
+        <div class="mb-3"><input type="text" name="address_line" class="form-control" value="{{ address.address_line }}" required></div>
+        <div class="mb-3"><input type="text" name="city" class="form-control" value="{{ address.city }}" required></div>
+        <div class="mb-3"><input type="text" name="state" class="form-control" value="{{ address.state }}" required></div>
+        <div class="mb-3"><input type="text" name="pincode" class="form-control" value="{{ address.pincode }}" required></div>
+        <button type="submit" class="btn btn-success">Update Address</button>
+        <br><br>
+        <a href="{{ url_for('addresses') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+    </div>
+        </div>
+        </div>
+        </div>
+
+</div>
+{% endblock %}

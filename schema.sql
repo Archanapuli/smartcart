@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS admin (
     admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
@@ -22,13 +23,15 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS orders (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
+    delivery_address INTEGER NOT NULL,
     razorpay_order_id TEXT,
     razorpay_payment_id TEXT,
     amount REAL,
     payment_status TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     order_status TEXT DEFAULT 'Pending',
-    FOREIGN KEY(user_id) REFERENCES users(user_id)
+    FOREIGN KEY(user_id) REFERENCES users(user_id),
+    FOREIGN KEY(delivery_address) REFERENCES addresses(id)
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
@@ -50,4 +53,18 @@ CREATE TABLE IF NOT EXISTS products (
     category TEXT,
     price REAL,
     image TEXT
+);
+
+
+CREATE TABLE IF NOT EXISTS addresses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    full_name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    address_line TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    pincode TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );

@@ -6,6 +6,8 @@
 {% block content %}
 
 <div class="d-flex justify-content-center align-items-center vh-100">
+
+    
 <div class="otp-card text-center ">
 
     <h2>Complete Your Payment</h2>
@@ -26,7 +28,7 @@
 <script>
 var options = {
     "key": "{{ key_id }}",
-    "amount": "{{ amount * 100 }}",
+    "amount": "{{ order_id and ''}}",
     "currency": "INR",
     "name": "SmartCart",
     "description": "Order Payment",

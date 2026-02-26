@@ -1,0 +1,60 @@
+{% extends "user/base.html" %}
+{% block title %}Add New Address{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width: 600px;">
+    
+    <div class="card shadow-sm p-4">
+        <h4 class="mb-4 fw-bold text-center">Add New Address</h4>
+
+        <form method="POST">
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Address Line</label>
+                <textarea name="address_line" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" class="form-control" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">State</label>
+                    <input type="text" name="state" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pincode</label>
+                <input type="text" name="pincode" class="form-control" required>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('addresses') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    Save Address
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

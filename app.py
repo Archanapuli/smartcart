@@ -437,7 +437,7 @@ def item_list():
 # =======================================================
 # DELETE PRODUCT (DELETE DB ROW + DELETE IMAGE FILE) - SQLite3
 # =======================================================
-@app.route('/admin/delete-item/<int:item_id>')
+@app.route('/admin/delete-item/<int:item_id>', methods=['POST'])
 def delete_item(item_id):
 
     if 'admin_id' not in session:
@@ -776,6 +776,35 @@ def update_order_status(order_id):
     flash("Order status updated successfully!", "success")
     return redirect(f"/admin/order/{order_id}")
 
+
+@app.route('/admin/user-addresses')
+def admin_user_addresses():
+    # 1️⃣ Check if admin is logged in
+    if 'admin_id' not in session:
+        flash("Please login first!", "danger")
+        return redirect('/admin-login')
+
+    # 2️⃣ Fetch all users with their addresses
+    conn = get_db_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT u.user_id, u.first_name, u.last_name, u.email, 
+               a.id AS address_id, a.full_name, a.phone, a.address_line, 
+               a.city, a.state, a.pincode
+        FROM users u
+        LEFT JOIN addresses a ON u.user_id = a.user_id
+        ORDER BY u.user_id
+    """)
+
+    all_user_addresses = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # 3️⃣ Render template
+    return render_template("admin/user_addresses.html", addresses=all_user_addresses)
+
 #ROUTE 1: User Registration (GET + POST)
 # =================================================================
 # ROUTE: USER REGISTRATION
@@ -1047,11 +1076,14 @@ def user_dashboard():
 
     cursor.execute('SELECT * FROM "products"')
     products = cursor.fetchall()
+    
 
     cursor.close()
     conn.close()
 
     return render_template("user/user_home.html", products=products)
+
+
 
 
 # ==========================================================
@@ -1414,6 +1446,10 @@ def user_pay():
     if 'user_id' not in session:
         flash("Please login!", "danger")
         return redirect('/user-login')
+    
+    if 'selected_address_id' not in session:
+        flash("Please select delivery address first.", "warning")
+        return redirect(url_for('addresses'))
 
     cart = session.get('cart', {})
 
@@ -1471,6 +1507,14 @@ def verify_payment():
     if 'user_id' not in session:
         flash("Please login to complete the payment.", "danger")
         return redirect('/user-login')
+    
+    if 'selected_address_id' not in session:
+        flash("No delivery address selected. Please select an address.", "danger")
+        return redirect('/user/addresses')
+
+    delivery_address = session.get('selected_address_id')
+    # Validate it exists and is an integer
+
 
     # Read values posted from frontend
     razorpay_payment_id = request.form.get('razorpay_payment_id')
@@ -1511,11 +1555,12 @@ def verify_payment():
     cursor = conn.cursor()
 
     try:
+        delivery_address = int(session.get('selected_address_id'))
         # Insert into orders table
         cursor.execute("""
-            INSERT INTO orders (user_id, razorpay_order_id, razorpay_payment_id, amount, payment_status)
-            VALUES (?, ?, ?, ?, ?)
-        """, (user_id, razorpay_order_id, razorpay_payment_id, total_amount, 'paid'))
+            INSERT INTO orders (user_id, delivery_address, razorpay_order_id, razorpay_payment_id, amount, payment_status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (user_id, delivery_address,razorpay_order_id, razorpay_payment_id, total_amount, 'paid'))
 
         order_db_id = cursor.lastrowid  # newly created order's primary key
 
@@ -1541,6 +1586,8 @@ def verify_payment():
         app.logger.error("Order storage failed: %s\n%s", str(e), traceback.format_exc())
         flash("There was an error saving your order. Contact support.", "danger")
         return redirect('/user/cart')
+    
+        
 
     finally:
         cursor.close()
@@ -1650,6 +1697,272 @@ def download_invoice(order_id):
     response.headers['Content-Disposition'] = f"attachment; filename=invoice_{order_id}.pdf"
 
     return response
+
+# @app.route('/addresses', methods=['GET','POST'])
+# def addresses():
+#     if 'user_id' not in session:
+#         flash("Please login first.", "danger")
+#         return redirect(url_for('user_login'))
+
+#     user_id = session['user_id']
+
+#     conn = sqlite3.connect('smartcart.db')
+#     conn.row_factory = sqlite3.Row
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM addresses WHERE user_id=?", (user_id,))
+#     all_addresses = cursor.fetchall()
+
+
+#     if request.method == 'POST':
+#         # If user selects an existing address
+#         selected_address_id = request.form.get('selected_address')
+#         if selected_address_id:
+#             session['delivery_address_id'] = selected_address_id
+#             return redirect(url_for('verify_payment'))
+        
+    
+
+#         # If user fills new address form
+#         full_name = request.form.get('full_name')
+#         phone = request.form.get('phone')
+#         address_line = request.form.get('address_line')
+#         city = request.form.get('city')
+#         state = request.form.get('state')
+#         pincode = request.form.get('pincode')
+
+#         if full_name and phone and address_line and city and state and pincode:
+#             cursor.execute("""
+#                 INSERT INTO addresses
+#                 (user_id, full_name, phone, address_line, city, state, pincode)
+#                 VALUES (?, ?, ?, ?, ?, ?, ?)
+#             """, (user_id, full_name, phone, address_line, city, state, pincode))
+#             conn.commit()
+#             new_id = cursor.lastrowid
+#             session['delivery_address_id'] = new_id
+#             conn.close()
+#             return redirect(url_for('verify_payment'))
+
+#     conn.close()
+#     return render_template('user/addresses.html', addresses=all_addresses)
+
+# @app.route('/addresses', methods=['GET','POST'])
+# def addresses():
+#     if 'user_id' not in session:
+#         flash("Please login first.", "danger")
+#         return redirect(url_for('user_login'))
+
+#     user_id = session['user_id']
+
+#     conn = sqlite3.connect('smartcart.db')
+#     conn.row_factory = sqlite3.Row
+#     cursor = conn.cursor()
+
+#     # Handle delete request
+#     delete_id = request.args.get('delete')
+#     if delete_id:
+#         cursor.execute("DELETE FROM addresses WHERE id=? AND user_id=?", (delete_id, user_id))
+#         conn.commit()
+#         flash("Address deleted successfully.", "success")
+#         return redirect(url_for('addresses'))
+
+#     # Handle edit request
+#     if request.method == 'POST':
+#         edit_id = request.form.get('edit_id')
+#         full_name = request.form.get('full_name')
+#         phone = request.form.get('phone')
+#         address_line = request.form.get('address_line')
+#         city = request.form.get('city')
+#         state = request.form.get('state')
+#         pincode = request.form.get('pincode')
+
+#         if edit_id:  # Edit existing address
+#             cursor.execute("""
+#                 UPDATE addresses
+#                 SET full_name=?, phone=?, address_line=?, city=?, state=?, pincode=?
+#                 WHERE id=? AND user_id=?
+#             """, (full_name, phone, address_line, city, state, pincode, edit_id, user_id))
+#             conn.commit()
+#             session['delivery_address_id'] = edit_id
+#             flash("Address updated successfully.", "success")
+#             conn.close()
+#             return redirect(url_for('addresses'))
+
+#         # Add new address
+#         if full_name and phone and address_line and city and state and pincode:
+#             cursor.execute("""
+#                 INSERT INTO addresses
+#                 (user_id, full_name, phone, address_line, city, state, pincode)
+#                 VALUES (?, ?, ?, ?, ?, ?, ?)
+#             """, (user_id, full_name, phone, address_line, city, state, pincode))
+#             conn.commit()
+#             new_id = cursor.lastrowid
+#             session['delivery_address_id'] = new_id
+#             flash("New address added successfully.", "success")
+#             conn.close()
+#             return redirect(url_for('addresses'))
+
+#         # Select existing address
+#         selected_address_id = request.form.get('selected_address')
+#         if selected_address_id:
+#             session['delivery_address_id'] = selected_address_id
+#             flash("Address selected for delivery.", "success")
+#             return redirect(url_for('verify_payment'))
+
+#     # Fetch all addresses
+#     cursor.execute("SELECT * FROM addresses WHERE user_id=?", (user_id,))
+#     all_addresses = cursor.fetchall()
+#     conn.close()
+#     return render_template('user/addresses.html', addresses=all_addresses)
+
+
+@app.route('/addresses', methods=['GET', 'POST'])
+def addresses():
+    if 'user_id' not in session:
+        flash("Please login first.", "danger")
+        return redirect(url_for('user_login'))
+
+    user_id = session['user_id']
+    conn = sqlite3.connect('smartcart.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Select an address
+    if request.method == 'POST' and request.form.get('selected_address'):
+        session['selected_address_id'] = int(request.form.get('selected_address'))
+        flash("Address selected for delivery.", "success")
+        return redirect(url_for('verify_payment'))
+
+    # Add new address
+    if request.method == 'POST' and request.form.get('full_name'):
+        full_name = request.form.get('full_name')
+        phone = request.form.get('phone')
+        address_line = request.form.get('address_line')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        pincode = request.form.get('pincode')
+
+        cursor.execute("""
+            INSERT INTO addresses
+            (user_id, full_name, phone, address_line, city, state, pincode)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (user_id, full_name, phone, address_line, city, state, pincode))
+        conn.commit()
+        new_id = cursor.lastrowid
+        session['selected_address_id'] = new_id
+        flash("New address added.", "success")
+        conn.close()
+        return redirect(url_for('addresses'))
+
+    # Fetch all addresses
+    cursor.execute("SELECT * FROM addresses WHERE user_id=?", (user_id,))
+    all_addresses = cursor.fetchall()
+    
+    conn.close()
+    return render_template('user/addresses.html', addresses=all_addresses)
+
+
+# Delete address
+@app.route('/addresses/delete/<int:addr_id>')
+def delete_address(addr_id):
+    if 'user_id' not in session:
+        flash("Please login first.", "danger")
+        return redirect(url_for('user_login'))
+
+    user_id = session['user_id']
+    conn = sqlite3.connect('smartcart.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM addresses WHERE id=? AND user_id=?", (addr_id, user_id))
+    conn.commit()
+    conn.close()
+    flash("Address deleted.", "success")
+    return redirect(url_for('addresses'))
+
+
+# Edit address
+@app.route('/addresses/edit/<int:addr_id>', methods=['GET', 'POST'])
+def edit_address(addr_id):
+    if 'user_id' not in session:
+        flash("Please login first.", "danger")
+        return redirect(url_for('user_login'))
+
+    user_id = session['user_id']
+    conn = sqlite3.connect('smartcart.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        phone = request.form.get('phone')
+        address_line = request.form.get('address_line')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        pincode = request.form.get('pincode')
+
+        cursor.execute("""
+            UPDATE addresses
+            SET full_name=?, phone=?, address_line=?, city=?, state=?, pincode=?
+            WHERE id=? AND user_id=?
+        """, (full_name, phone, address_line, city, state, pincode, addr_id, user_id))
+        conn.commit()
+        session['selected_address_id'] = addr_id
+        conn.close()
+        flash("Address updated.", "success")
+        return redirect(url_for('addresses'))
+
+    # GET → show form with existing data
+    cursor.execute("SELECT * FROM addresses WHERE id=? AND user_id=?", (addr_id, user_id))
+    address = cursor.fetchone()
+    conn.close()
+    if not address:
+        flash("Address not found.", "danger")
+        return redirect(url_for('addresses'))
+    return render_template('user/edit_address.html', address=address)
+
+@app.route('/add-address', methods=['GET', 'POST'])
+def add_address():
+
+    if 'user_id' not in session:
+        return redirect(url_for('user_login'))
+
+    if request.method == 'POST':
+
+        user_id = session['user_id']
+        full_name = request.form.get('full_name')
+        phone = request.form.get('phone')
+        address_line = request.form.get('address_line')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        pincode = request.form.get('pincode')
+
+        conn = sqlite3.connect('smartcart.db')
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO addresses
+            (user_id, full_name, phone, address_line, city, state, pincode)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (user_id, full_name, phone, address_line, city, state, pincode))
+
+        conn.commit()
+        conn.close()
+
+        flash("Address added successfully!", "success")
+        return redirect(url_for('addresses'))
+
+    return render_template("user/add_address.html")
+
+@app.route('/select-address', methods=['POST'])
+def select_address():
+    selected_id = request.form.get('selected_address')
+
+    if not selected_id:
+        flash("Please select an address.", "warning")
+        return redirect(url_for('addresses'))
+
+    session['selected_address_id'] = selected_id
+
+    return redirect(url_for('user_pay'))
+
 
 # =====================================
 # ROUTE: HELP CENTER

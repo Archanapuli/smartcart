@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+
+{% block title %}User Addresses{% endblock %}
+
+{% block content %}
+<h2>User Delivery Addresses</h2>
+<div class="admin-order-wrapper">
+
+<div class="admin-order-card">
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Address Full Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Pincode</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in addresses %}
+        <tr>
+            <td>{{ a.first_name }} {{ a.last_name }}</td>
+            <td>{{ a.email }}</td>
+            <td>{{ a.full_name if a.full_name else '-' }}</td>
+            <td>{{ a.phone if a.phone else '-' }}</td>
+            <td>{{ a.address_line if a.address_line else '-' }}</td>
+            <td>{{ a.city if a.city else '-' }}</td>
+            <td>{{ a.state if a.state else '-' }}</td>
+            <td>{{ a.pincode if a.pincode else '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+{% endblock %}

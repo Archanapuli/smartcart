@@ -1,0 +1,144 @@
+{% extends "user/base.html" %}
+{% block title %}My Addresses{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    
+{% if addresses %}
+   
+<h2 class="mb-4">Saved Addresses</h2>
+<form method="POST" action="{{ url_for('select_address') }}">
+    <div class="row">
+        {% for addr in addresses %}
+        <div class="col-md-4 mb-4">
+            <label class="address-card w-100">
+                <input type="radio" name="selected_address" value="{{ addr.id }}" hidden>
+            <div class="card shadow-sm custom-card">
+                <div class="card-body">
+                    <h5>{{ addr.full_name }}</h5>
+                    <p>
+                        {{ addr.address_line }}<br>
+                        {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}<br>
+                        Phone: {{ addr.phone }}
+                    </p>
+                    <div class="mt-3 d-flex gap-2">
+                    <a href="{{ url_for('edit_address', addr_id=addr.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{{ url_for('delete_address', addr_id=addr.id) }}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Are you sure you want to delete this address?');">
+                        Delete
+                    </a>
+                    </div>
+                    </div>
+            </div>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+                    <!-- <button type="submit" class="use-address-btn">
+        <i class="bi bi-check-circle me-2"></i> Select Address & Pay
+    </button> -->
+    <button type="submit" class="use-address-btn">
+        Select Address & Pay
+    </button>
+</form>
+    <br><br>
+    </form>
+    <div class="mb-3">
+    <a href="{{ url_for('add_address') }}" class="text-dark" style="text-decoration:none;">
+        + Add New Address
+    </a>
+</div>
+</div>
+
+                
+{% endif %}
+    
+
+   
+    {% if not addresses %}
+    <h2 class="text-center mt-5">Add New Address</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+
+    
+        <form method="POST">
+            <input type="text" name="full_name" class="form-control mb-3" placeholder="Full Name" required>
+            <input type="text" name="phone" class="form-control mb-3" placeholder="Phone" required>
+            <input type="text" name="address_line" class="form-control mb-3" placeholder="Address Line" required>
+            <input type="text" name="city" class="form-control mb-3" placeholder="City" required>
+            <input type="text" name="state" class="form-control mb-3" placeholder="State" required>
+            <input type="text" name="pincode" class="form-control mb-3" placeholder="Pincode" required>
+
+            <button type="submit" class="btn btn-success w-100">
+                Add Address
+            </button>
+        </form>
+        </div>
+        </div>
+        </div>
+        
+
+    </div>
+    {% endif %}
+
+
+<style>
+.address-card {
+    cursor: pointer;
+}
+
+.custom-card {
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+}
+
+.address-card input:checked + .custom-card {
+    border: 2px solid #0d6efd;
+    background-color: #f0f8ff;
+    transform: scale(1.02);
+}
+
+.add-del-btn {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.add-del-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.use-address-btn {
+    background: #ffffff;
+    color: black;
+    width: auto;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+}
+
+.use-address-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.5);
+    background: #e7f1ff;
+}
+
+
+
+
+
+</style>
+{% endblock %}
